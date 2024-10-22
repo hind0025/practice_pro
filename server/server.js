@@ -2,6 +2,10 @@ const express = require('express');
 const connectDb=require("./config/dbConnection");
 const errorHandler=require("./middleware/errorHandler");
 const cors=require("cors");
+
+const dotenv=require("dotenv");
+dotenv.config();
+
 connectDb();
 constapp=express();
 const port=process.env.PORT||5000;
