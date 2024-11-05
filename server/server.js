@@ -5,6 +5,8 @@ const cors= require("cors");
 const hbs = require("hbs");
 const path = require("path");
 const doctorDetails=require("./routes/doctorDetails");
+const multer=require("multer");
+//const upload = multer({ dest: 'uploads/' });
 
 const users = [
     { name: "Harman Dhiman", age: 20 },
@@ -12,7 +14,7 @@ const users = [
     { name: "Jaikirat", age: 20 },
 ];
 const app = express();
-const port = 3000 || 5000;
+const port = 3001 || 5000;
 const dotenv = require("dotenv");
  dotenv.config();
  connectDb();
@@ -36,7 +38,26 @@ app.get("/alluser", (req, res) => {
         users: users, 
     });
 });
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, "./uploads"); // Directory to save files
+    },
+    filename: (req, file, cb) => {
+        const uniqueSuffex = Date.now() + "-" + Math.round(Math.random()*1E9);
+        cb(null, file.filename +'-'+uniqueSuffex); 
+    },
+})
+const upload=multer({storage:storage});
 //register route
+app.post('/profile', upload.single('avatar'), function (req, res, next) {
+    // req.file is the `avatar` file
+    // req.body will hold the text fields, if there were any
+    console.log(req.body);
+    console.log(req.file);
+    return res.redirect("/home");
+  });
+ 
+
 app.use("/api/register" , require("./routes/userRoutes"));
 app.use("/api/doctor",doctorDetails);
 app.listen(port , ()=>{
