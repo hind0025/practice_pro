@@ -1,25 +1,39 @@
 const jwt=require('jsonwebtoken')
-const createToken=jwt.sign(payload,process.env.PRIVATE_KEY,(err,token)=>
+
+
+const generateToken=(userData)=>
 {
-    
-    if(err)
-    {
-        console.error("INVALID: ",err.message)
-    }
-    else
-    {
-        console.log(token);
-    }
-})
-const validateToken=jwt.verify(token,process.env.PRIVATE_KEY,function(err,decoded)
+    //in this function we r creating new fresh jwt token to proovide user for sesion /login management or for authorization
+    return jwt.sign(userData,process.env.PRIVATE_KEY);
+
+}
+const validatejwtToken=(req,res,next)=>
 {
-    if(err)
+    const authorization=req.headers.authorization;
+    //output 1=bearer dshijifjjj
+    //output 2=dsdfgih
+    //output 3=
+    //output 4=token bana h n aa
+
+    if(!authorization)
     {
-        console.error("INVALID: ",err.message)
+        return res.status(401).json({err:'token not available'})
     }
-    else
+    const token=req.headers.authorization.split(' ')[1]
+    //token provided is wrong ,throw error 
+    if(!token)
     {
-        console.log(token);
+        return res.status(401).json({err:'unauthorized error'})
     }
-   
-})
+    try{
+        //we are handling if token is validated then move to next or respond back to client 
+        const validateToken=jwt.verify(token,process.env.PRIVATE_KEY);
+        req.user=validateToken;
+        next();
+    }
+    catch(err)
+    {
+        console.error("error occured: ",err.message);
+    }
+}
+module.exports={generateToken,validatejwtToken}
