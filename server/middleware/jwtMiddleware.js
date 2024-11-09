@@ -1,12 +1,12 @@
 const jwt=require('jsonwebtoken')
 
 
-const generateToken=(userData)=>
-{
-    //in this function we r creating new fresh jwt token to proovide user for sesion /login management or for authorization
-    return jwt.sign(userData,process.env.PRIVATE_KEY);
+// const generateToken=(userData)=>
+// {
+//     //in this function we r creating new fresh jwt token to proovide user for sesion /login management or for authorization
+//     return jwt.sign(userData,process.env.PRIVATE_KEY);
 
-}
+// }
 const validatejwtToken=(req,res,next)=>
 {
     const authorization=req.headers.authorization;
@@ -28,6 +28,7 @@ const validatejwtToken=(req,res,next)=>
     try{
         //we are handling if token is validated then move to next or respond back to client 
         const validateToken=jwt.verify(token,process.env.PRIVATE_KEY);
+        
         req.user=validateToken;
         next();
     }
@@ -36,4 +37,4 @@ const validatejwtToken=(req,res,next)=>
         console.error("error occured: ",err.message);
     }
 }
-module.exports={generateToken,validatejwtToken}
+module.exports={validatejwtToken}
