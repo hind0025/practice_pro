@@ -105,6 +105,7 @@ app.get("/profile",async(req,res)=>{
 //register route
 app.use("/api/register" , require("./routes/userRoutes"));
 app.use("/api/doctors", require("./routes/doctorDetails"));
+app.use("/api/newsletter",require("./routes/newsletterRoutes"));
 app.listen(port , ()=>{
     console.log(`server running on http://localhost:${port}`);
 })
